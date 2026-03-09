@@ -315,7 +315,7 @@ export default function SettingsPage() {
                       ) : (
                         <Button
                           size="sm"
-                          variant={isUpgrade ? "default" : "outline"}
+                          variant={isUpgrade ? "destructive" : "outline"}
                           onClick={() => handlePlanChange(id)}
                         >
                           Upgrade

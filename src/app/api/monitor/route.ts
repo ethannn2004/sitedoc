@@ -3,12 +3,13 @@ import { checkAllSites } from "@/lib/monitor";
 import { logger } from "@/lib/logger";
 
 /**
- * POST /api/monitor
+ * GET /api/monitor
  *
- * Cron-compatible endpoint that checks all monitored sites.
- * Protected by a shared secret to prevent unauthorized calls.
+ * Vercel Cron compatible endpoint that checks all monitored sites.
+ * Vercel crons use GET and pass CRON_SECRET via Authorization header.
+ * Also supports POST for manual/external cron triggers.
  */
-export async function POST(request: NextRequest) {
+async function handleMonitor(request: NextRequest) {
   const authHeader = request.headers.get("authorization");
   const cronSecret = process.env.CRON_SECRET;
 
@@ -45,4 +46,14 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     );
   }
+}
+
+// Vercel Cron uses GET
+export async function GET(request: NextRequest) {
+  return handleMonitor(request);
+}
+
+// Keep POST for manual/external triggers
+export async function POST(request: NextRequest) {
+  return handleMonitor(request);
 }
